@@ -1,14 +1,48 @@
+param (
+    [Parameter(,
+    ParameterSetName = "number_of_passwords")]
+    [Int]
+    $number_of_passwords = 25,
+
+    [Parameter(,
+    ParameterSetName = "nouns")]
+    [Int]
+    $number_of_nouns = 1,
+
+    [Parameter(,
+    ParameterSetName = "verbs")]
+    [Int]
+    $number_of_verbs = 1,
+
+    [Parameter(,
+    ParameterSetName = "adverbs")]
+    [Int]
+    $number_of_adverbs = 1,
+
+    [Parameter(,
+    ParameterSetName = "adjectives")]
+    [Int]
+    $number_of_adjectives, 
+
+    [Parameter(,
+    ParameterSetName = "symbols")]
+    [Int]
+    $number_of_symbols = 1,
+
+    [Parameter(Mandatory = $false,
+    ParameterSetName = "shuffle_password")]
+    [Switch]
+    $shuffle_password = $false
+
+)
+
 # Simple powershell script to create random word based passwords 
-$number_of_passwords = 25
-$number_of_nouns = 1
-$number_of_verbs = 1
-$number_of_adverbs = 1
-$number_of_adjectives = 1
-$number_of_symbols = 1
-$shuffle_password = $true
+$passwords = New-Object System.Collections.ArrayList
 $number_range = (0,99)
+#$shuffle_password = $false
 
 # read in word lists
+write-host "Reading word lists..."
 $nouns = New-Object System.Collections.ArrayList
 foreach($line in Get-Content "./1syllablenouns.txt") {
     $nouns.Add($line -replace "`n|`r")
@@ -86,7 +120,12 @@ do {
         $password = $password + (Get-Culture).TextInfo.ToTitleCase($_)
     }
 
-    write-host $password.ToString()
+    $passwords.Add($password.ToString())
 
-    $i = $i + 1
+    $i++
     } until ($i -eq $number_of_passwords)
+
+
+$passwords | ForEach-Object {
+    write-host $_
+}
